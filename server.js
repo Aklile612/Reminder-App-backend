@@ -1,15 +1,18 @@
-import express from "express"
 import dotenv from 'dotenv'
+dotenv.config()
+
 import dbconnect from "./db/dbConnection.js"
 import app from "./app.js"
-import cors from 'cors'
 
-app.use(cors()); 
-app.get('/',(req,res)=>{
-    res.send("hello")
-})
+// Use dynamic port
+const PORT = process.env.PORT || 5000;
 
-app.listen(5000,(req,res)=>{
-    dbconnect()
-    console.log("app running on port 5000")
-})
+dbconnect()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`app running on port ${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('Failed to connect to DB', err);
+  });
